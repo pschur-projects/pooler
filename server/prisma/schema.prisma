@@ -1,0 +1,37 @@
+datasource mysql {
+  provider = "mysql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Pool {
+  createdAt       DateTime       @default(now())
+  currentQuestion String?
+  id              String         @id @default(cuid())
+  name            String
+  poolQuestions   PoolQuestion[]
+  updatedAt       DateTime       @updatedAt
+}
+
+model PoolQuestion {
+  answers   Json?
+  antworten Answer[]
+  createdAt DateTime @default(now())
+  id        String   @id @default(cuid())
+  pool      Pool?    @relation(fields: [poolId], references: [id])
+  poolId    String?
+  question  String
+  updatedAt DateTime @updatedAt
+}
+
+model Answer {
+  answer         String
+  createdAt      DateTime     @default(now())
+  id             String       @id @default(cuid())
+  poolQuestion   PoolQuestion @relation(fields: [poolQuestionId], references: [id])
+  poolQuestionId String
+  updatedAt      DateTime     @updatedAt
+}
